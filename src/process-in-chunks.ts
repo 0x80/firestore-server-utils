@@ -15,48 +15,25 @@ const optionsDefaults: Required<ChunkingOptions> = {
  * some optional CLI feedback on progress. If the process function returns a
  * value those values are aggregated in the final result.
  */
-export async function processInChunks<Input, Result>(
-  allItems: Input[],
-  processFn: (value: Input) => Promise<Result>,
-  options: ChunkingOptions = {}
-): Promise<Result[]> {
-  const { chunkSize } = Object.assign({}, optionsDefaults, options);
-
-  const chunks = chunk(allItems, chunkSize);
-  const allResults: Result[] = [];
-
-  for (const [index, items] of chunks.entries()) {
-    verboseLog(`Processing chunk ${index + 1}/${chunks.length}`);
-
-    const results = await Promise.all(items.map((v) => processFn(v)));
-
-    allResults.push(...results);
-  }
-
-  return allResults;
-}
-
-/**
- * Same as processInChunks, but passing the whole chunk to the callback
- * function.
- */
-export async function processInChunksByChunk<T, Result>(
+export async function processInChunks<T>(
   allItems: T[],
-  processFn: (chunk: T[]) => Promise<Result[]>,
+  processFn: (value: T, index?: number) => Promise<unknown>,
   options: ChunkingOptions = {}
-) {
+): Promise<void> {
   const { chunkSize } = Object.assign({}, optionsDefaults, options);
 
   const chunks = chunk(allItems, chunkSize);
+  const overallIndex = 0;
+
   const errorMessages: string[] = [];
-  const allResults: Result[] = [];
 
   for (const [index, items] of chunks.entries()) {
     verboseLog(`Processing chunk ${index + 1}/${chunks.length}`);
 
     try {
-      const results = await processFn(items);
-      allResults.push(...results);
+      await Promise.all(
+        items.map((v, idx) => processFn(v, overallIndex + idx))
+      );
     } catch (err) {
       errorMessages.push(getErrorMessage(err));
     }
@@ -69,6 +46,41 @@ export async function processInChunksByChunk<T, Result>(
       )}}`
     );
   }
+}
 
-  return allResults;
+/**
+ * Same as processInChunks, but passing the whole chunk to the callback
+ * function.
+ */
+export async function processInChunksByChunk<T>(
+  allItems: T[],
+  processFn: (chunk: T[], index?: number) => unknown | Promise<unknown>,
+  options: ChunkingOptions = {}
+) {
+  const { chunkSize } = Object.assign({}, optionsDefaults, options);
+
+  const chunks = chunk(allItems, chunkSize);
+  const errorMessages: string[] = [];
+
+  let overallIndex = 0;
+
+  for (const [index, items] of chunks.entries()) {
+    verboseLog(`Processing chunk ${index + 1}/${chunks.length}`);
+
+    try {
+      await processFn(items, overallIndex + index);
+    } catch (err) {
+      errorMessages.push(getErrorMessage(err));
+    }
+
+    overallIndex += chunkSize;
+  }
+
+  if (!isEmpty(errorMessages)) {
+    throw new Error(
+      `Failed to process all chunks successfully. Error messages (limited to 10): ${JSON.stringify(
+        take(errorMessages, 10)
+      )}}`
+    );
+  }
 }
