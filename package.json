@@ -17,6 +17,7 @@
   "devDependencies": {
     "eslint": "^8.52.0",
     "eslint-config-0x80": "^0.0.0",
+    "np": "^8.0.4",
     "prettier": "^3.0.3",
     "prettier-plugin-jsdoc": "^1.1.1",
     "typescript": "^5.2.2"
