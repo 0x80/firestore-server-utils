@@ -1,14 +1,27 @@
 {
-  "name": "firestore-hooks",
+  "name": "firestore-server-utils",
   "version": "0.0.0",
-  "description": "Clean Firestore hooks for Typescript React",
-  "main": "index.js",
+  "description": "Clean zero-dependency abstractions for handling Firestore documents in server environments",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
   "scripts": {
+    "lint": "eslint .",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thijs Koerselman",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.5.2"
+    "eslint": "^8.52.0",
+    "eslint-config-0x80": "^0.0.0",
+    "prettier": "^3.0.3",
+    "prettier-plugin-jsdoc": "^1.1.1",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "firebase-admin": "^11.11.0"
   }
 }
