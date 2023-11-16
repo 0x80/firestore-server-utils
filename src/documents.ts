@@ -4,7 +4,7 @@ import type {
   QueryDocumentSnapshot,
 } from "firebase-admin/firestore";
 import { MAX_BATCH_SIZE } from "./constants";
-import type { FsDocument } from "./document";
+import { makeFsDocument, type FsDocument } from "./document";
 import { get, last, verboseLog } from "./utils";
 
 export type QueryOptions = {
@@ -44,13 +44,7 @@ export async function getDocuments<T>(
   );
 
   if (!useBatching) {
-    const snapshot = await query.get();
-
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      data: doc.data() as T,
-      ref: doc.ref,
-    }));
+    return (await query.get()).docs.map(makeFsDocument<T>);
   } else {
     const limitedQuery = query.limit(batchSize);
 
@@ -87,11 +81,7 @@ export async function getSomeDocuments<T>(
     return [[], undefined];
   }
 
-  const documents = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    data: doc.data() as T,
-    ref: doc.ref,
-  }));
+  const documents = snapshot.docs.map(makeFsDocument<T>);
 
   /** Do not return the last snapshot if this batch was the last batch */
   const lastDocumentSnapshot =
@@ -129,11 +119,7 @@ async function getDocumentsBatch<T>(
   const lastDoc = last(snapshot.docs) as QueryDocumentSnapshot;
 
   /** Map the results to documents */
-  const results = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    data: doc.data() as T,
-    ref: doc.ref,
-  }));
+  const results = snapshot.docs.map(makeFsDocument<T>);
 
   /** Log some information about count and pagination */
   const numRead = snapshot.size;
@@ -152,28 +138,20 @@ async function getDocumentsBatch<T>(
 export async function getDocumentsFromTransaction<T>(
   transaction: FirebaseFirestore.Transaction,
   query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
-): Promise<FsDocument<T>[]> {
+) {
   const snapshot = await transaction.get(query);
 
   if (snapshot.empty) return [];
 
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    data: doc.data() as T,
-    ref: doc.ref,
-  }));
+  return snapshot.docs.map(makeFsDocument<T>);
 }
 
-export async function getFirstDocument<T>(
-  query: Query<DocumentData>
-): Promise<FsDocument<T> | undefined> {
+export async function getFirstDocument<T>(query: Query<DocumentData>) {
   const snapshot = await query.limit(1).get();
 
   if (snapshot.empty) {
     return;
   }
 
-  const doc = snapshot.docs[0] as unknown as QueryDocumentSnapshot;
-
-  return { id: doc.id, data: doc.data() as T, ref: doc.ref };
+  return makeFsDocument<T>(snapshot.docs[0]);
 }
