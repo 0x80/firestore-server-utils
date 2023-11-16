@@ -34,6 +34,6 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "firebase-admin": "^11"
+    "firebase-admin": ">=10.0"
   }
 }
