@@ -1,6 +1,6 @@
 {
   "name": "firestore-server-utils",
-  "version": "1.0.0-3",
+  "version": "1.0.0-4",
   "description": "Clean zero-dependency abstractions for handling Firestore documents in server environments",
   "files": [
     "dist"
