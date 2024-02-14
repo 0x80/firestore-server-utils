@@ -3,7 +3,7 @@ import type {
   DocumentReference,
   DocumentSnapshot,
   Transaction,
-} from "firebase-admin/lib/firestore";
+} from "firebase-admin/firestore";
 import { invariant } from "./utils";
 
 /**
