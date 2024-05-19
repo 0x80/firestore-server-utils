@@ -24,7 +24,8 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "build": "tsup-node",
-    "test": "echo \"No test specified\""
+    "test": "echo \"No test specified\"",
+    "prepare": "pnpm run type-check && pnpm run build"
   },
   "author": "Thijs Koerselman",
   "license": "MIT",
