@@ -31,13 +31,13 @@
   "devDependencies": {
     "eslint": "^8.52.0",
     "eslint-config-0x80": "^0.0.0",
-    "np": "^8.0.4",
     "prettier": "^3.0.3",
     "prettier-plugin-jsdoc": "^1.1.1",
-    "tsup": "^7.2.0",
+    "tsup": "^8.0.2",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "firebase-admin": ">=10.0"
-  }
+  },
+  "packageManager": "pnpm@9.0.5+sha256.61bd66913b52012107ec25a6ee4d6a161021ab99e04f6acee3aa50d0e34b4af9"
 }
