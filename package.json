@@ -31,7 +31,7 @@
   "author": "Thijs Koerselman",
   "license": "MIT",
   "devDependencies": {
-    "@codecompose/typescript-config": "^1.1.2",
+    "@codecompose/typescript-config": "^1.1.3",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.1",
     "eslint-config-0x80": "^0.0.0",
