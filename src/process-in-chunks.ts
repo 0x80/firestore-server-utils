@@ -17,7 +17,7 @@ const optionsDefaults: Required<ChunkingOptions> = {
  */
 export async function processInChunks<T>(
   allItems: T[],
-  processFn: (value: T, index?: number) => Promise<unknown>,
+  processFn: (value: T, index: number) => Promise<unknown>,
   options: ChunkingOptions = {}
 ): Promise<void> {
   const { chunkSize } = Object.assign({}, optionsDefaults, options);
@@ -54,7 +54,7 @@ export async function processInChunks<T>(
  */
 export async function processInChunksByChunk<T>(
   allItems: T[],
-  processFn: (chunk: T[], index?: number) => unknown | Promise<unknown>,
+  processFn: (chunk: T[], index: number) => unknown | Promise<unknown>,
   options: ChunkingOptions = {}
 ) {
   const { chunkSize } = Object.assign({}, optionsDefaults, options);
