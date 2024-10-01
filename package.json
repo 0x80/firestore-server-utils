@@ -24,13 +24,15 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "build": "tsup-node",
+    "clean": "del dist tsconfig.tsbuildinfo",
     "test": "echo \"No test specified\"",
     "prepare": "pnpm run type-check && pnpm run build"
   },
   "author": "Thijs Koerselman",
   "license": "MIT",
   "devDependencies": {
-    "@codecompose/typescript-config": "^1.1.0",
+    "@codecompose/typescript-config": "^1.1.2",
+    "del-cli": "^5.1.0",
     "eslint": "^8.57.1",
     "eslint-config-0x80": "^0.0.0",
     "prettier": "^3.3.3",

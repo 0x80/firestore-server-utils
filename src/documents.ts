@@ -153,5 +153,5 @@ export async function getFirstDocument<T>(query: Query<DocumentData>) {
     return;
   }
 
-  return makeFsDocument<T>(snapshot.docs[0]);
+  return makeFsDocument<T>(snapshot.docs[0]!);
 }
