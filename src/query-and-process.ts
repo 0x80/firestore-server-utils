@@ -29,7 +29,7 @@ const optionsDefaults: Required<QueryAndProcessOptions> = {
 
 export async function queryAndProcess<T extends Record<string, unknown>>(
   query: Query<DocumentData>,
-  callback: (document: FsDocument<T>) => Promise<void>,
+  callback: (document: FsDocument<T>) => Promise<unknown>,
   options: QueryAndProcessOptions = {}
 ) {
   const { throttleSecs, limitToFirstBatch } = Object.assign(
