@@ -1,4 +1,4 @@
-import { chunk, getErrorMessage, isEmpty, take, verboseLog } from "./utils";
+import { chunk, getErrorMessage, isEmpty, take, verboseLog } from "./helpers";
 
 export type ChunkingOptions = {
   chunkSize?: number;

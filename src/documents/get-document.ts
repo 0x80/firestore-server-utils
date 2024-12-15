@@ -1,35 +1,9 @@
 import type {
   CollectionReference,
-  DocumentReference,
-  DocumentSnapshot,
   Transaction,
 } from "firebase-admin/firestore";
-import { invariant } from "./utils";
-
-/**
- * A simple serialize-able document type. All utility methods return an
- * FsDocument, but sometimes you might want to construct a document from an API
- * payload, or be able to serialize it. For those cases the PlainDocument type
- * can be useful as a subset of FsDocument.
- */
-export type PlainDocument<T> = {
-  readonly id: string;
-  readonly data: T;
-};
-
-export type FsDocument<T> = {
-  readonly ref: DocumentReference;
-} & PlainDocument<T>;
-
-export function makeFsDocument<T>(
-  doc: DocumentSnapshot<FirebaseFirestore.DocumentData>
-): FsDocument<T> {
-  return {
-    id: doc.id,
-    data: doc.data() as T,
-    ref: doc.ref,
-  };
-}
+import { invariant } from "~/helpers";
+import { makeFsDocument } from "./make-fs-document";
 
 export async function getDocument<T>(
   collectionRef: CollectionReference,

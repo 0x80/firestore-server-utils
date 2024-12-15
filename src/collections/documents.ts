@@ -3,9 +3,11 @@ import type {
   Query,
   QueryDocumentSnapshot,
 } from "firebase-admin/firestore";
-import { MAX_BATCH_SIZE } from "./constants";
-import { makeFsDocument, type FsDocument } from "./document";
-import { get, last, verboseLog } from "./utils";
+import { MAX_BATCH_SIZE } from "~/constants";
+import { makeFsDocument } from "~/documents";
+import { last } from "~/helpers";
+import type { FsDocument } from "~/types";
+import { getDocumentsBatch } from "./helpers/get-documents-batch";
 
 export type QueryOptions = {
   useBatching?: boolean;
@@ -90,51 +92,6 @@ export async function getSomeDocuments<T>(
   return [documents, limitToFirstBatch ? undefined : lastDocumentSnapshot];
 }
 
-async function getDocumentsBatch<T>(
-  query: Query,
-  options: {
-    orderByField?: string;
-    limitToFirstBatch?: boolean;
-  }
-): Promise<FsDocument<T>[]> {
-  const { orderByField, limitToFirstBatch } = options;
-
-  /**
-   * For easy testing we sometimes need to run an algorithm on only a part of a
-   * collection (like cities). This boolean makes that easy but it should never
-   * be used in production so we log it with a warning.
-   */
-  if (limitToFirstBatch) {
-    console.warn(
-      "Returning only the first batch of documents (limitToFirstBatch = true)"
-    );
-  }
-
-  const snapshot = await query.get();
-
-  if (snapshot.empty) {
-    return [];
-  }
-
-  const lastDoc = last(snapshot.docs) as QueryDocumentSnapshot;
-
-  /** Map the results to documents */
-  const results = snapshot.docs.map(makeFsDocument<T>);
-
-  /** Log some information about count and pagination */
-  const numRead = snapshot.size;
-  const lastPageLog = orderByField && get(lastDoc.data(), orderByField);
-
-  verboseLog(`Read ${numRead} records, until ${lastPageLog ?? lastDoc.id}`);
-
-  if (numRead < MAX_BATCH_SIZE || limitToFirstBatch === true) {
-    return results;
-  } else {
-    const pagedQuery = query.startAfter(lastDoc);
-    return results.concat(await getDocumentsBatch<T>(pagedQuery, options));
-  }
-}
-
 export async function getDocumentsFromTransaction<T>(
   transaction: FirebaseFirestore.Transaction,
   query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
@@ -146,6 +103,14 @@ export async function getDocumentsFromTransaction<T>(
   return snapshot.docs.map(makeFsDocument<T>);
 }
 
+/**
+ * Because getDocuments overwrites any query limit with the batchSize, this
+ * function is useful for when you just want to get the first document from a
+ * sorted query.
+ *
+ * Alternatively, you can use getDocuments with options `{ useBatching: false
+ * }`, which would preserve the limit you set on the query.
+ */
 export async function getFirstDocument<T>(query: Query<DocumentData>) {
   const snapshot = await query.limit(1).get();
 
