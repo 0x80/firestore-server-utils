@@ -10,13 +10,13 @@ import type { FsDocument } from "~/types";
 import { getDocumentsBatch } from "./helpers/get-documents-batch";
 
 export type QueryOptions = {
-  useBatching?: boolean;
+  disableBatching?: boolean;
   batchSize?: number;
   limitToFirstBatch?: boolean;
 };
 
 const optionsDefaults: Required<QueryOptions> = {
-  useBatching: true,
+  disableBatching: false,
   batchSize: MAX_BATCH_SIZE,
   limitToFirstBatch: false,
 };
@@ -39,13 +39,13 @@ export async function getDocuments<T>(
   query: Query<DocumentData>,
   options: QueryOptions = {}
 ): Promise<FsDocument<T>[]> {
-  const { useBatching, batchSize, limitToFirstBatch } = Object.assign(
+  const { disableBatching, batchSize, limitToFirstBatch } = Object.assign(
     {},
     optionsDefaults,
     options
   );
 
-  if (!useBatching) {
+  if (disableBatching) {
     return (await query.get()).docs.map(makeFsDocument<T>);
   } else {
     const limitedQuery = query.limit(batchSize);
@@ -108,7 +108,7 @@ export async function getDocumentsFromTransaction<T>(
  * function is useful for when you just want to get the first document from a
  * sorted query.
  *
- * Alternatively, you can use getDocuments with options `{ useBatching: false
+ * Alternatively, you can use getDocuments with options `{ disableBatching: true
  * }`, which would preserve the limit you set on the query.
  */
 export async function getFirstDocument<T>(query: Query<DocumentData>) {
