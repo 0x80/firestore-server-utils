@@ -47,8 +47,10 @@ export async function getDocument<T>(
 
 export async function getDocumentMaybe<T>(
   collectionRef: CollectionReference,
-  documentId: string
+  documentId?: string | null
 ) {
+  if (!documentId) return;
+
   const doc = await collectionRef.doc(documentId).get();
 
   if (!doc.exists) return;
@@ -74,8 +76,10 @@ export async function getDocumentFromTransaction<T>(
 export async function getDocumentFromTransactionMaybe<T>(
   transaction: Transaction,
   collectionRef: CollectionReference,
-  documentId: string
+  documentId?: string | null
 ) {
+  if (!documentId) return;
+
   const doc = await transaction.get(collectionRef.doc(documentId));
 
   if (!doc.exists) {
