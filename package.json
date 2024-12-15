@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/0x80/firestore-server-utils"
   },
+  "type": "module",
   "files": [
     "dist"
   ],
@@ -13,8 +14,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "engines": {
