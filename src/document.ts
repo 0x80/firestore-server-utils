@@ -13,12 +13,12 @@ import { invariant } from "./utils";
  * can be useful as a subset of FsDocument.
  */
 export type PlainDocument<T> = {
-  id: string;
-  data: T;
+  readonly id: string;
+  readonly data: T;
 };
 
 export type FsDocument<T> = {
-  ref: DocumentReference;
+  readonly ref: DocumentReference;
 } & PlainDocument<T>;
 
 export function makeFsDocument<T>(
