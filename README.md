@@ -1,25 +1,23 @@
 # Firestore Server Utils
 
-Clean zero-dependency abstractions for handling Firestore documents in server
-environments.
+Elegant, typed, zero-dependency abstractions for handling Firestore documents in
+server environments.
 
-All functions are designed to take a collection reference as their first
-argument. If you type those references, the functions can infer their return
-type from it, which can greatly reduce boilerplate and improve type safety.
+For client-side see [firestore-hooks](https://github.com/0x80/firestore-hooks)
+which provides similar abstractions.
 
-For client-side usage in React apps there is the
-[firestore-hooks](https://github.com/0x80/firestore-hooks) package which uses
-similar abstractions.
+All functions are designed to take a typed collection reference as their first
+argument. The various functions can infer their return type from it, which can
+greatly reduces boilerplate as well as the risk of mistakes.
 
 ## Installation
 
 `pnpm i firestore-server-utils`
 
-## ExampleUsage
+## Example Usage
 
-It is recommended to create a single file where you define all of your database
-collection references for re-use, and map each to the appropriate type, as shown
-below.
+Create a single file in which you define re-usable refs for all of your database
+collections, and map each to the appropriate type, as shown below.
 
 ```ts
 // db-refs.ts
@@ -27,12 +25,10 @@ import { CollectionReference } from "firebase-admin/firestore";
 import { db } from "./firestore";
 import { User, UserEvent } from "./types";
 
-/**
- * Define all of your database collection types here. For sub-collections you
- * can use a function to create a reference.
- */
 export const refs = {
+  /** For top-level collections it's easy */
   users: db.collection("users") as CollectionReference<User>,
+  /** For sub-collections you could use a function that returns the reference. */
   userEvents: (userId: string) =>
     db
       .collection("users")
@@ -41,40 +37,38 @@ export const refs = {
 };
 ```
 
-Now the various functions in this library will be able to infer the type from
-the collection reference.
+The various functions in this library will be able to infer the type from the
+collection reference.
 
 ```ts
 import { refs } from "./db-refs";
 
-/** User will be typed to FsDocument<User> here */
+/** User will be typed to FsMutableDocument<User> here */
 const user = await getDocument(refs.users, "123");
 
 /**
  * This fetches and processes a query in batches, and userEvent will be typed to
- * FsDocument<UserEvent> here
+ * FsMutableDocument<UserEvent> here
  */
 await queryAndProcess(
   refs.userEvents(user.id).where("type", "==", "like"),
   async (userEvent) => {
     console.log(userEvent);
 
-    /**
-     * The ref property allows you to update the data of the document.
-     *
-     * @todo We plan to add a typed update function in the near future.
-     */
-    await userEvent.ref.update({
+    /** The returned document has a typed update function */
+    await userEvent.update({
       is_processed: true,
-    } satisfies UpdateData<UserEvent>);
+    });
   }
 );
 ```
 
 ## API
 
-All functions use `FsDocument<T>` in their return type. This is a type that
-conveniently combines the data and id together with the document reference.
+All functions use `FsDocument<T>` or `FsMutableDocument<T>` in their return
+type. This is a type that conveniently combines the data and id together with
+the document reference. The mutable type also provides a `ref` and a typed
+`update` function.
 
 ### Single Document
 
@@ -98,5 +92,5 @@ conveniently combines the data and id together with the document reference.
 | `queryAndProcess`        | Query a collection and process the results using a handler for a single document |
 | `queryAndProcessByChunk` | Query a collection and process the results using a handler for each chunk        |
 
-More detailed documentation will follow, but I think you can easily figure it
-out from the function signatures
+More detailed documentation will follow, but I think the function signatures are
+pretty self-explanatory.
