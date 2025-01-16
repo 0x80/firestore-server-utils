@@ -6,7 +6,7 @@ import { invariant } from "~/helpers";
 import { makeFsDocument } from "./make-fs-document";
 
 export async function getDocument<T>(
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId: string
 ) {
   const doc = await collectionRef.doc(documentId).get();
@@ -20,7 +20,7 @@ export async function getDocument<T>(
 }
 
 export async function getDocumentMaybe<T>(
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
   if (!documentId) return;
@@ -34,7 +34,7 @@ export async function getDocumentMaybe<T>(
 
 export async function getDocumentFromTransaction<T>(
   transaction: Transaction,
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId: string
 ) {
   const doc = await transaction.get(collectionRef.doc(documentId));
@@ -49,7 +49,7 @@ export async function getDocumentFromTransaction<T>(
 
 export async function getDocumentFromTransactionMaybe<T>(
   transaction: Transaction,
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
   if (!documentId) return;
