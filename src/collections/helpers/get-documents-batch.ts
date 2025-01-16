@@ -5,7 +5,7 @@ import { get, last, verboseLog } from "~/helpers";
 import type { FsDocument } from "~/types";
 
 export async function getDocumentsBatch<T>(
-  query: Query,
+  query: Query<T>,
   options: {
     orderByField?: string;
     limitToFirstBatch?: boolean;

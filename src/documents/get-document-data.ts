@@ -5,7 +5,7 @@ import type {
 import { invariant } from "~/helpers";
 
 export async function getDocumentData<T>(
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId: string
 ) {
   const doc = await collectionRef.doc(documentId).get();
@@ -19,7 +19,7 @@ export async function getDocumentData<T>(
 }
 
 export async function getDocumentDataMaybe<T>(
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
   if (!documentId) return;
@@ -33,7 +33,7 @@ export async function getDocumentDataMaybe<T>(
 
 export async function getDocumentDataFromTransaction<T>(
   transaction: Transaction,
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId: string
 ) {
   const doc = await transaction.get(collectionRef.doc(documentId));
@@ -48,7 +48,7 @@ export async function getDocumentDataFromTransaction<T>(
 
 export async function getDocumentDataFromTransactionMaybe<T>(
   transaction: Transaction,
-  collectionRef: CollectionReference,
+  collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
   if (!documentId) return;

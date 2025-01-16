@@ -1,8 +1,4 @@
-import type {
-  DocumentData,
-  Query,
-  QueryDocumentSnapshot,
-} from "firebase-admin/firestore";
+import type { Query, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { DEFAULT_CHUNK_SIZE } from "~/constants";
 import {
   getErrorMessage,
@@ -28,7 +24,7 @@ const optionsDefaults: Required<QueryAndProcessOptions> = {
 };
 
 export async function queryAndProcess<T extends Record<string, unknown>>(
-  query: Query<DocumentData>,
+  query: Query<T>,
   callback: (document: FsDocument<T>) => Promise<unknown>,
   options: QueryAndProcessOptions = {}
 ) {
@@ -75,7 +71,7 @@ export async function queryAndProcess<T extends Record<string, unknown>>(
 }
 
 export async function queryAndProcessByChunk<T extends Record<string, unknown>>(
-  query: Query<DocumentData>,
+  query: Query<T>,
   callback: (documents: FsDocument<T>[]) => Promise<unknown>,
   options: QueryAndProcessOptions = {}
 ) {

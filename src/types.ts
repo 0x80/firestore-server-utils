@@ -12,5 +12,5 @@ export type PlainDocument<T> = {
 };
 
 export type FsDocument<T> = {
-  readonly ref: DocumentReference;
+  readonly ref: DocumentReference<T>;
 } & PlainDocument<T>;

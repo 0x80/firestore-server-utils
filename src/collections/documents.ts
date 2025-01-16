@@ -1,8 +1,4 @@
-import type {
-  DocumentData,
-  Query,
-  QueryDocumentSnapshot,
-} from "firebase-admin/firestore";
+import type { Query, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { MAX_BATCH_SIZE } from "~/constants";
 import { makeFsDocument } from "~/documents";
 import { last } from "~/helpers";
@@ -36,7 +32,7 @@ const optionsDefaults: Required<QueryOptions> = {
  * documents but just return an incomplete snapshot.
  */
 export async function getDocuments<T>(
-  query: Query<DocumentData>,
+  query: Query<T>,
   options: QueryOptions = {}
 ): Promise<FsDocument<T>[]> {
   const { disableBatching, batchSize, limitToFirstBatch } = Object.assign(
@@ -61,10 +57,10 @@ export async function getDocuments<T>(
  * can be passed in as the "startAfter" argument.
  */
 export async function getSomeDocuments<T>(
-  query: Query<DocumentData>,
+  query: Query<T>,
   startAfterSnapshot: QueryDocumentSnapshot | undefined,
   options: QueryOptions = {}
-): Promise<[FsDocument<T>[], QueryDocumentSnapshot | undefined]> {
+): Promise<[FsDocument<T>[], QueryDocumentSnapshot<T> | undefined]> {
   const { batchSize, limitToFirstBatch } = Object.assign(
     {},
     optionsDefaults,
@@ -94,7 +90,7 @@ export async function getSomeDocuments<T>(
 
 export async function getDocumentsFromTransaction<T>(
   transaction: FirebaseFirestore.Transaction,
-  query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
+  query: FirebaseFirestore.Query<T>
 ) {
   const snapshot = await transaction.get(query);
 
@@ -111,7 +107,7 @@ export async function getDocumentsFromTransaction<T>(
  * Alternatively, you can use getDocuments with options `{ disableBatching: true
  * }`, which would preserve the limit you set on the query.
  */
-export async function getFirstDocument<T>(query: Query<DocumentData>) {
+export async function getFirstDocument<T>(query: Query<T>) {
   const snapshot = await query.limit(1).get();
 
   if (snapshot.empty) {
