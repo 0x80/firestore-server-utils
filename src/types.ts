@@ -1,4 +1,8 @@
-import type { DocumentReference } from "firebase-admin/firestore";
+import type {
+  DocumentReference,
+  UpdateData,
+  WriteResult,
+} from "firebase-admin/firestore";
 
 /**
  * A simple serialize-able document type. All methods return an FsDocument, but
@@ -6,11 +10,12 @@ import type { DocumentReference } from "firebase-admin/firestore";
  * able to serialize it. For those cases the PlainDocument type can be useful as
  * a subset of FsDocument, by dropping the `ref` property.
  */
-export type PlainDocument<T> = {
+export type FsDocument<T> = {
   readonly id: string;
   readonly data: T;
 };
 
-export type FsDocument<T> = {
+export type FsMutableDocument<T> = {
   readonly ref: DocumentReference<T>;
-} & PlainDocument<T>;
+  readonly update: (data: UpdateData<T>) => Promise<WriteResult>;
+} & FsDocument<T>;

@@ -4,7 +4,7 @@ import type {
 } from "firebase-admin/firestore";
 import { invariant } from "~/helpers";
 
-export async function getDocumentData<T>(
+export async function getDocumentData<T extends Record<string, unknown>>(
   collectionRef: CollectionReference<T>,
   documentId: string
 ) {
@@ -18,7 +18,7 @@ export async function getDocumentData<T>(
   return doc.data() as T;
 }
 
-export async function getDocumentDataMaybe<T>(
+export async function getDocumentDataMaybe<T extends Record<string, unknown>>(
   collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
@@ -31,7 +31,9 @@ export async function getDocumentDataMaybe<T>(
   return doc.data() as T;
 }
 
-export async function getDocumentDataFromTransaction<T>(
+export async function getDocumentDataFromTransaction<
+  T extends Record<string, unknown>,
+>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string
@@ -46,7 +48,9 @@ export async function getDocumentDataFromTransaction<T>(
   return doc.data() as T;
 }
 
-export async function getDocumentDataFromTransactionMaybe<T>(
+export async function getDocumentDataFromTransactionMaybe<
+  T extends Record<string, unknown>,
+>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId?: string | null

@@ -5,7 +5,7 @@ import type {
 import { invariant } from "~/helpers";
 import { makeFsDocument } from "./make-fs-document";
 
-export async function getDocument<T>(
+export async function getDocument<T extends Record<string, unknown>>(
   collectionRef: CollectionReference<T>,
   documentId: string
 ) {
@@ -19,7 +19,7 @@ export async function getDocument<T>(
   return makeFsDocument<T>(doc);
 }
 
-export async function getDocumentMaybe<T>(
+export async function getDocumentMaybe<T extends Record<string, unknown>>(
   collectionRef: CollectionReference<T>,
   documentId?: string | null
 ) {
@@ -32,7 +32,9 @@ export async function getDocumentMaybe<T>(
   return makeFsDocument<T>(doc);
 }
 
-export async function getDocumentFromTransaction<T>(
+export async function getDocumentFromTransaction<
+  T extends Record<string, unknown>,
+>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string
@@ -47,7 +49,9 @@ export async function getDocumentFromTransaction<T>(
   return makeFsDocument<T>(doc);
 }
 
-export async function getDocumentFromTransactionMaybe<T>(
+export async function getDocumentFromTransactionMaybe<
+  T extends Record<string, unknown>,
+>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId?: string | null

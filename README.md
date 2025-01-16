@@ -58,6 +58,15 @@ await queryAndProcess(
   refs.userEvents(user.id).where("type", "==", "like"),
   async (userEvent) => {
     console.log(userEvent);
+
+    /**
+     * The ref property allows you to update the data of the document.
+     *
+     * @todo We plan to add a typed update function in the near future.
+     */
+    await userEvent.ref.update({
+      is_processed: true,
+    } satisfies UpdateData<UserEvent>);
   }
 );
 ```
@@ -88,3 +97,6 @@ conveniently combines the data and id together with the document reference.
 | `getFirstDocument`       | Fetch a single document using a query                                            |
 | `queryAndProcess`        | Query a collection and process the results using a handler for a single document |
 | `queryAndProcessByChunk` | Query a collection and process the results using a handler for each chunk        |
+
+More detailed documentation will follow, but I think you can easily figure it
+out from the function signatures

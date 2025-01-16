@@ -8,7 +8,7 @@ import {
   verboseCount,
   verboseLog,
 } from "~/helpers";
-import type { FsDocument } from "~/types";
+import type { FsMutableDocument } from "~/types";
 import { getSomeDocuments } from "./documents";
 
 type QueryAndProcessOptions = {
@@ -25,7 +25,7 @@ const optionsDefaults: Required<QueryAndProcessOptions> = {
 
 export async function queryAndProcess<T extends Record<string, unknown>>(
   query: Query<T>,
-  callback: (document: FsDocument<T>) => Promise<unknown>,
+  callback: (document: FsMutableDocument<T>) => Promise<unknown>,
   options: QueryAndProcessOptions = {}
 ) {
   const { throttleSecs, limitToFirstBatch } = Object.assign(
@@ -72,7 +72,7 @@ export async function queryAndProcess<T extends Record<string, unknown>>(
 
 export async function queryAndProcessByChunk<T extends Record<string, unknown>>(
   query: Query<T>,
-  callback: (documents: FsDocument<T>[]) => Promise<unknown>,
+  callback: (documents: FsMutableDocument<T>[]) => Promise<unknown>,
   options: QueryAndProcessOptions = {}
 ) {
   const { throttleSecs, limitToFirstBatch } = Object.assign(

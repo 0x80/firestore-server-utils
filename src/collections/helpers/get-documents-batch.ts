@@ -2,15 +2,15 @@ import type { Query, QueryDocumentSnapshot } from "@google-cloud/firestore";
 import { MAX_BATCH_SIZE } from "~/constants";
 import { makeFsDocument } from "~/documents";
 import { get, last, verboseLog } from "~/helpers";
-import type { FsDocument } from "~/types";
+import type { FsMutableDocument } from "~/types";
 
-export async function getDocumentsBatch<T>(
+export async function getDocumentsBatch<T extends Record<string, unknown>>(
   query: Query<T>,
   options: {
     orderByField?: string;
     limitToFirstBatch?: boolean;
   }
-): Promise<FsDocument<T>[]> {
+): Promise<FsMutableDocument<T>[]> {
   const { orderByField, limitToFirstBatch } = options;
 
   /**
